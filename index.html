@@ -267,7 +267,7 @@
             padding: 20px;
             color: #b0bec5;
             margin-top: 20px;
-            font-size: 0.8rem; 
+            font-size: 0.8rem;
         }
         
         .footer-links {
@@ -295,7 +295,7 @@
         }
         
         .tool-link:hover::after {
-            content: "这才是大佬";
+            content: "真·程序员主页";
             position: absolute;
             bottom: 100%;
             left: 50%;
@@ -396,9 +396,9 @@
         <footer>
             <div class="footer-links">
                 <span>© <span id="current-year"></span></span>
-                <a href="https://chat.deepseek.com" class="footer-link tool-link" target="_blank">程序员主页</a>
-                <a href="https://space.bilibili.com/199337103" class="footer-link" target="_blank">作者B站</a>
-                <a href="https://github.com/suijisjs/URL_Purify" class="footer-link" target="_blank">开源地址</a>
+                <a href="https://chat.deepseek.com" class="footer-link tool-link" target="_blank">网址净化工具</a>
+                <a href="https://space.bilibili.com/199337103" class="footer-link" target="_blank">作者链接</a>
+                <a href="https://github.com/suijisjs/liangjiejinghua" class="footer-link" target="_blank">开源地址</a>
             </div>
         </footer>
     </div>
@@ -406,6 +406,23 @@
     <script>
         // 动态获取当前年份
         document.getElementById('current-year').textContent = new Date().getFullYear();
+        
+        // 表情符号处理函数 - 方案4
+        function advancedUrlCleaning(input) {
+            // 1. 中文表情识别 - 匹配1-6个中文字符的表情描述
+            let cleaned = input.replace(/\[\s*[\u4e00-\u9fa5]{1,6}\s*\]/g, '');
+            
+            // 2. 英文表情/平台识别 - 常见表情和浏览器平台
+            cleaned = cleaned.replace(/\[\s*(?:smile|laugh|cry|angry|happy|sad|cool|edge|chrome|firefox|safari|opera|ie|windows|mac|linux|android|ios|iphone|ipad|wechat|qq)\s*\]/gi, '');
+            
+            // 3. 基本字符净化 - 保留URL合法字符
+            cleaned = cleaned.replace(/[^a-zA-Z0-9-._~:/?#\[\]@!$&'()*+,;=%]/g, '');
+            
+            // 4. 孤立方括号清理 - 移除不成对或不合理的方括号
+            cleaned = cleaned.replace(/(?<!\w)\[(?!\w)/g, '').replace(/(?<!\w)\](?!\w)/g, '');
+            
+            return cleaned;
+        }
         
         async function cleanUrl() {
             const inputElem = document.getElementById('input');
@@ -429,8 +446,8 @@
                     throw new Error('请输入内容');
                 }
 
-                // 执行字符净化
-                const cleaned = input.replace(/[^a-zA-Z0-9-._~:/?#\[\]@!$&'()*+,;=%]/g, '');
+                // 使用高级净化函数处理输入
+                const cleaned = advancedUrlCleaning(input);
                 
                 // 新增有效性检查：净化后为空时抛出错误
                 if (!cleaned) {
